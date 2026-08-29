@@ -11,6 +11,28 @@
     content="Devlys builds high-converting landing pages, modern business websites, custom software and practical AI automation."
   />
 
+  <link rel="canonical" href="https://devlys.com/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Devlys — Websites, Software & AI Automation" />
+  <meta
+    property="og:description"
+    content="High-converting websites, custom software and practical AI automation built around business results."
+  />
+  <meta property="og:url" content="https://devlys.com/" />
+  <meta property="og:image" content="https://devlys.com/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Devlys — Websites, Software & AI Automation" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Devlys — Websites, Software & AI Automation" />
+  <meta
+    name="twitter:description"
+    content="High-converting websites, custom software and practical AI automation built around business results."
+  />
+  <meta name="twitter:image" content="https://devlys.com/og.png" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -22,7 +44,11 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body>
+<body id="top">
+
+  <a href="#main-content" class="skip-link">
+    Skip to content
+  </a>
 
   <!-- =========================
        NAVBAR
@@ -59,6 +85,8 @@
         class="menu-btn"
         id="menuBtn"
         aria-label="Open menu"
+        aria-controls="navLinks"
+        aria-expanded="false"
         type="button"
       >
         <span></span>
@@ -71,7 +99,7 @@
   </header>
 
 
-  <main id="top">
+  <main id="main-content">
 
 
     <!-- =========================
@@ -147,9 +175,9 @@
               Designed to turn visitors into enquiries and customers.
             </p>
 
-            <div class="preview-button">
+            <a href="#contact" class="preview-button">
               Get Started
-            </div>
+            </a>
 
           </div>
 
@@ -654,44 +682,12 @@
         </div>
 
 
-        <!-- =========================
-             NETLIFY CONTACT FORM
-        ========================== -->
+        <!-- Contact form opens a pre-filled email draft, so it works on any host. -->
 
         <form
           class="contact-form"
           id="contactForm"
-          name="contact"
-          method="POST"
-          data-netlify="true"
-          data-netlify-honeypot="bot-field"
         >
-
-
-          <!-- Required by Netlify -->
-          <input
-            type="hidden"
-            name="form-name"
-            value="contact"
-          />
-
-
-          <!-- Spam protection -->
-          <p class="hidden">
-
-            <label>
-
-              Don't fill this out if you're human:
-
-              <input
-                name="bot-field"
-                type="text"
-                autocomplete="off"
-              />
-
-            </label>
-
-          </p>
 
 
           <!-- Name + Email -->
@@ -791,8 +787,12 @@
             class="btn btn-primary form-button"
             id="submitButton"
           >
-            Send Project Brief
+            Open Email Brief
           </button>
+
+          <p class="form-helper">
+            We’ll open a pre-filled email for you to review and send.
+          </p>
 
 
           <!-- JS success / error message -->
@@ -842,7 +842,7 @@
 
 
   <!-- JavaScript -->
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 
 
 </body>

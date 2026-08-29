@@ -50,6 +50,25 @@ a {
   color: inherit;
 }
 
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 1000;
+  transform: translateY(-160%);
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--dark);
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 button,
 input,
 textarea,
@@ -505,6 +524,9 @@ h1 span {
 
   font-size:
     0.9rem;
+
+  text-decoration:
+    none;
 }
 
 
@@ -1147,6 +1169,17 @@ select {
 
   line-height:
     1.5;
+}
+
+.form-helper {
+  color:
+    var(--muted);
+
+  font-size:
+    0.82rem;
+
+  margin-top:
+    -10px;
 }
 
 .form-note.error {
