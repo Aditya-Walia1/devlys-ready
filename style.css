@@ -920,6 +920,18 @@ h1 span {
   font-size: 0.78rem;
 }
 
+.review-text-link {
+  color: #c7d2fe;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.review-text-link:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
 .review-demo {
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.15);

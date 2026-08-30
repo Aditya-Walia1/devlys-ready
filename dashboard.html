@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Smart Review Dashboard · Devlys</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body class="dashboard-page">
+  <header class="dashboard-topbar">
+    <a href="/" class="app-logo"><span>DEV</span>LYS</a>
+    <nav>
+      <a href="/r/demo">Customer demo</a>
+      <a href="/signout-with-chatgpt?return_to=/" id="signOutLink" hidden>Sign out</a>
+    </nav>
+  </header>
+
+  <main class="dashboard-shell">
+    <section class="dashboard-loading" id="dashboardLoading">
+      <span></span>
+      <p>Opening your Smart Review workspace…</p>
+    </section>
+
+    <section class="dashboard-auth" id="dashboardAuth" hidden>
+      <div class="auth-icon" aria-hidden="true">↗</div>
+      <p class="review-overline">Devlys Smart Reviews</p>
+      <h1>Sign in to manage your locations.</h1>
+      <p>Your dashboard is protected. Customer review pages remain simple and public.</p>
+      <a class="app-primary-button" href="/signin-with-chatgpt?return_to=/dashboard" target="_top">
+        Sign in with ChatGPT
+      </a>
+    </section>
+
+    <div id="dashboardContent" hidden>
+      <section class="dashboard-heading">
+        <div>
+          <p class="review-overline">Smart Review QR</p>
+          <h1 id="dashboardTitle">Review operations</h1>
+          <p id="dashboardSubtitle">Monitor the customer journey across your locations.</p>
+        </div>
+        <button type="button" class="dashboard-add-button" id="showLocationForm">+ Add location</button>
+      </section>
+
+      <section class="metric-grid" aria-label="Last 30 days">
+        <article>
+          <span>QR scans</span>
+          <strong id="metricScans">0</strong>
+          <small>Last 30 days</small>
+        </article>
+        <article>
+          <span>Drafts created</span>
+          <strong id="metricDrafts">0</strong>
+          <small>Based on real input</small>
+        </article>
+        <article>
+          <span>Google handoffs</span>
+          <strong id="metricHandoffs">0</strong>
+          <small>Opened review page</small>
+        </article>
+        <article>
+          <span>Handoff rate</span>
+          <strong id="metricConversion">0%</strong>
+          <small>Scans to Google</small>
+        </article>
+      </section>
+
+      <section class="location-form-card" id="locationFormCard" hidden>
+        <div class="location-form-heading">
+          <div>
+            <p class="review-overline">New location</p>
+            <h2>Create its QR review journey</h2>
+          </div>
+          <button type="button" id="hideLocationForm" aria-label="Close location form">×</button>
+        </div>
+
+        <form id="locationForm">
+          <div class="dashboard-form-grid">
+            <label>
+              Business name
+              <input name="businessName" autocomplete="organization" placeholder="Devlys Hospitality" required />
+            </label>
+            <label>
+              Location name
+              <input name="locationName" placeholder="Saffron Table" required />
+            </label>
+          </div>
+          <label>
+            Location or branch
+            <input name="address" placeholder="Connaught Place · New Delhi" required />
+          </label>
+          <label>
+            Official Google review link
+            <input name="googleReviewUrl" type="url" placeholder="https://g.page/r/…/review" required />
+            <small>Copy this from the business’s “Get more reviews” screen.</small>
+          </label>
+          <label class="color-label">
+            Brand colour
+            <input name="brandColor" type="color" value="#315efb" />
+          </label>
+          <button type="submit" class="app-primary-button">Create location and QR</button>
+          <p class="dashboard-form-status" id="locationFormStatus" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="locations-section">
+        <div class="locations-heading">
+          <div>
+            <p class="review-overline">Locations</p>
+            <h2>Your active review journeys</h2>
+          </div>
+          <span id="locationCount">0 locations</span>
+        </div>
+
+        <div class="locations-grid" id="locationsGrid"></div>
+
+        <div class="dashboard-empty" id="dashboardEmpty" hidden>
+          <div aria-hidden="true">⌁</div>
+          <h3>Add your first business location.</h3>
+          <p>Connect its Google review link and Devlys will create the customer page and QR code.</p>
+          <button type="button" class="dashboard-add-button" id="emptyAddLocation">Add first location</button>
+        </div>
+      </section>
+    </div>
+
+    <section class="dashboard-error" id="dashboardError" hidden>
+      <h1>We couldn’t load the dashboard.</h1>
+      <p id="dashboardErrorMessage">Please refresh and try again.</p>
+    </section>
+  </main>
+
+  <script type="module" src="dashboard.js"></script>
+</body>
+</html>

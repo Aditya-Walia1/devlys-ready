@@ -6,10 +6,17 @@
   "scripts": {
     "dev": "vite --port=4173",
     "build": "node scripts/build.mjs",
+    "db:generate": "drizzle-kit generate",
+    "test": "node --test",
     "preview": "vite preview"
   },
   "devDependencies": {
     "@openai/sites-vite-plugin": "0.2.0",
+    "drizzle-kit": "^0.31.10",
     "vite": "8.2.2"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.2",
+    "qrcode": "^1.5.4"
   }
 }

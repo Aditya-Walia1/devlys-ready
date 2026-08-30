@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Share your experience · Devlys Smart Reviews</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body class="review-app-page">
+  <main class="review-app-shell">
+    <header class="review-app-header">
+      <a href="/" class="app-logo" aria-label="Devlys home"><span>DEV</span>LYS</a>
+      <span class="secure-note">Genuine feedback · Customer controlled</span>
+    </header>
+
+    <section class="review-flow-card" aria-labelledby="reviewTitle">
+      <div class="review-business">
+        <div class="business-mark" id="businessMark" aria-hidden="true">ST</div>
+        <div>
+          <p class="review-overline">You’re reviewing</p>
+          <h1 id="reviewTitle">Loading location…</h1>
+          <p id="businessAddress">Please wait</p>
+        </div>
+      </div>
+
+      <div class="flow-progress" id="flowProgress" aria-label="Step 1 of 2">
+        <span class="is-current" id="progressOne"></span>
+        <span id="progressTwo"></span>
+      </div>
+
+      <form id="customerReviewForm" hidden>
+        <fieldset class="app-fieldset">
+          <legend>How was your experience?</legend>
+          <p>Your honest rating helps shape the wording of your draft.</p>
+          <div class="app-stars" role="group" aria-label="Choose a rating">
+            <button type="button" data-app-rating="1" aria-pressed="false" aria-label="1 star">★</button>
+            <button type="button" data-app-rating="2" aria-pressed="false" aria-label="2 stars">★</button>
+            <button type="button" data-app-rating="3" aria-pressed="false" aria-label="3 stars">★</button>
+            <button type="button" data-app-rating="4" aria-pressed="false" aria-label="4 stars">★</button>
+            <button type="button" data-app-rating="5" aria-pressed="false" aria-label="5 stars">★</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="app-fieldset">
+          <legend>What stood out?</legend>
+          <p>Select everything that reflects your visit.</p>
+          <div class="app-chips">
+            <button type="button" data-app-topic="food" aria-pressed="false">Food quality</button>
+            <button type="button" data-app-topic="service" aria-pressed="false">Service</button>
+            <button type="button" data-app-topic="ambience" aria-pressed="false">Ambience</button>
+            <button type="button" data-app-topic="value" aria-pressed="false">Value</button>
+          </div>
+        </fieldset>
+
+        <label class="app-label" for="customerNote">
+          Add a detail from your visit <span>Optional</span>
+          <textarea id="customerNote" rows="4" maxlength="500" placeholder="The team helped us choose a dish, and…"></textarea>
+        </label>
+
+        <button type="submit" class="app-primary-button">
+          Create my editable draft <span aria-hidden="true">→</span>
+        </button>
+        <p class="app-form-status" id="customerFormStatus" aria-live="polite"></p>
+      </form>
+
+      <section class="draft-result" id="draftResult" aria-labelledby="draftTitle" hidden>
+        <div class="result-check" aria-hidden="true">✓</div>
+        <p class="review-overline">Your editable draft</p>
+        <h2 id="draftTitle">Make it sound like you.</h2>
+        <p class="draft-intro">Read and edit the text before deciding whether to share it.</p>
+
+        <label class="app-label" for="generatedDraft">
+          Review draft
+          <textarea id="generatedDraft" rows="8" maxlength="1200"></textarea>
+        </label>
+
+        <button type="button" class="app-primary-button" id="copyAndContinue">
+          Copy and continue to Google <span aria-hidden="true">↗</span>
+        </button>
+        <button type="button" class="app-secondary-button" id="startOver">Start again</button>
+        <p class="app-form-status result-status" id="draftStatus" aria-live="polite"></p>
+        <p class="demo-result-note" id="demoResultNote" hidden>
+          This is the demo location, so no external Google page will open.
+        </p>
+      </section>
+
+      <section class="review-error" id="reviewError" hidden>
+        <h2>We couldn’t open this review page.</h2>
+        <p id="reviewErrorMessage">Check the QR code and try again.</p>
+        <a href="/">Visit Devlys</a>
+      </section>
+
+      <p class="review-privacy">
+        Devlys uses only the feedback you provide to create this draft. Nothing is posted automatically.
+      </p>
+    </section>
+  </main>
+  <script type="module" src="review.js"></script>
+</body>
+</html>
