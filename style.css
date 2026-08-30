@@ -776,6 +776,409 @@ h1 span {
 
 
 /* =========================
+   SMART REVIEW QR
+========================= */
+
+.review-section {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 82% 18%,
+      rgba(72, 107, 255, 0.24),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      #0b1020 0%,
+      #111827 58%,
+      #172554 100%
+    );
+  color: #ffffff;
+}
+
+.review-section::before {
+  content: '';
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  left: -210px;
+  bottom: -230px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 72px rgba(255, 255, 255, 0.025),
+    0 0 0 145px rgba(255, 255, 255, 0.018);
+  pointer-events: none;
+}
+
+.review-showcase {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 0.92fr 1.08fr;
+  gap: 76px;
+  align-items: center;
+}
+
+.product-pill {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #cbd5e1;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.product-pill span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #7c9aff;
+  box-shadow: 0 0 0 4px rgba(124, 154, 255, 0.15);
+}
+
+.review-copy .eyebrow {
+  color: #8da4ff;
+}
+
+.review-copy h2 {
+  max-width: 620px;
+  font-size: clamp(2.45rem, 4.6vw, 4.25rem);
+}
+
+.review-lead {
+  max-width: 610px;
+  margin: 24px 0 32px;
+  color: #b8c2d3;
+  font-size: 1.06rem;
+}
+
+.review-benefits {
+  display: grid;
+  gap: 2px;
+  max-width: 590px;
+}
+
+.review-benefits > div {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 14px;
+  padding: 16px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.review-benefits > div:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.review-benefits > div > span {
+  color: #8098f9;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.review-benefits p {
+  color: #98a6ba;
+  font-size: 0.91rem;
+}
+
+.review-benefits strong {
+  display: block;
+  margin-bottom: 2px;
+  color: #ffffff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.98rem;
+}
+
+.review-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 30px;
+}
+
+.btn-light {
+  background: #ffffff;
+  color: #111827;
+}
+
+.btn-light:hover {
+  background: #edf1ff;
+  transform: translateY(-1px);
+}
+
+.review-actions > span {
+  color: #8f9caf;
+  font-size: 0.78rem;
+}
+
+.review-demo {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 26px;
+  background: #f8fafc;
+  color: var(--text);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.demo-toolbar {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  border-bottom: 1px solid #e5e9f0;
+  background: #ffffff;
+}
+
+.demo-brand {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+}
+
+.demo-brand span {
+  color: var(--accent);
+}
+
+.demo-badge {
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #eaf0ff;
+  color: #2e55d7;
+  font-size: 0.69rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.demo-content {
+  min-height: 550px;
+  padding: 35px 38px 30px;
+  background:
+    radial-gradient(circle at 100% 0, #e8edff, transparent 32%),
+    #f8fafc;
+}
+
+.demo-kicker {
+  color: var(--accent);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.demo-content h3 {
+  margin: 8px 0 7px;
+  font-size: 1.7rem;
+}
+
+.demo-helper {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.star-rating {
+  display: flex;
+  gap: 7px;
+  margin: 24px 0 25px;
+}
+
+.star-rating button {
+  width: 45px;
+  height: 45px;
+  border: 1px solid #d8dee8;
+  border-radius: 11px;
+  background: #ffffff;
+  color: #c7ced8;
+  cursor: pointer;
+  font-size: 1.45rem;
+  line-height: 1;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.star-rating button:hover,
+.star-rating button.is-active {
+  border-color: #ffbf3c;
+  background: #fff8e8;
+  color: #f4a80f;
+  transform: translateY(-1px);
+}
+
+.experience-fieldset {
+  margin: 0 0 22px;
+  border: 0;
+}
+
+.experience-fieldset legend,
+.demo-label {
+  margin-bottom: 9px;
+  color: #344054;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.experience-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.experience-chips button {
+  padding: 8px 12px;
+  border: 1px solid #d8dee8;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #4b5565;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 700;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.experience-chips button:hover,
+.experience-chips button.is-active {
+  border-color: #9eb1ff;
+  background: #edf1ff;
+  color: #294cc7;
+}
+
+.demo-label {
+  display: grid;
+  gap: 7px;
+}
+
+.demo-label textarea {
+  min-height: 82px;
+  border-color: #d8dee8;
+  background: #ffffff;
+  font-size: 0.86rem;
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+#reviewDraft {
+  min-height: 174px;
+}
+
+.demo-primary,
+.demo-reset {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.demo-primary {
+  min-height: 49px;
+  margin-top: 18px;
+  border: 0;
+  background: var(--accent);
+  color: #ffffff;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.demo-primary:hover {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+}
+
+.demo-primary span {
+  font-size: 1.08rem;
+}
+
+.demo-reset {
+  min-height: 42px;
+  margin-top: 7px;
+  border: 0;
+  background: transparent;
+  color: #596579;
+  font-size: 0.82rem;
+}
+
+.demo-reset:hover {
+  color: var(--text);
+}
+
+.demo-status {
+  min-height: 20px;
+  margin-top: 8px;
+  color: var(--error);
+  font-size: 0.77rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+#copyStatus {
+  color: var(--success);
+}
+
+.draft-success {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: #def7ec;
+  color: var(--success);
+  font-weight: 900;
+}
+
+.demo-footer {
+  display: flex;
+  justify-content: center;
+  gap: 12px 20px;
+  flex-wrap: wrap;
+  padding: 14px 22px;
+  border-top: 1px solid #e5e9f0;
+  background: #ffffff;
+  color: #687387;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.demo-footer span::before {
+  content: '✓';
+  margin-right: 5px;
+  color: var(--success);
+  font-weight: 900;
+}
+
+.star-rating button:focus-visible,
+.experience-chips button:focus-visible,
+.demo-primary:focus-visible,
+.demo-reset:focus-visible {
+  outline: 3px solid rgba(124, 154, 255, 0.45);
+  outline-offset: 2px;
+}
+
+
+/* =========================
    WHY DEVLYS
 ========================= */
 
@@ -1235,12 +1638,22 @@ footer {
 
   .hero-grid,
   .split-section,
-  .contact-grid {
+  .contact-grid,
+  .review-showcase {
     grid-template-columns:
       1fr;
 
     gap:
       48px;
+  }
+
+  .review-copy {
+    max-width: 720px;
+  }
+
+  .review-demo {
+    width: min(620px, 100%);
+    margin: 0 auto;
   }
 
   .hero {
@@ -1454,6 +1867,37 @@ footer {
       22px;
   }
 
+  .review-copy h2 {
+    font-size: 2.5rem;
+  }
+
+  .review-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .review-actions .btn {
+    width: 100%;
+  }
+
+  .demo-content {
+    min-height: 0;
+    padding: 28px 22px 24px;
+  }
+
+  .demo-toolbar {
+    padding: 0 20px;
+  }
+
+  .star-rating {
+    gap: 5px;
+  }
+
+  .star-rating button {
+    width: 42px;
+    height: 42px;
+  }
+
   .form-button {
     width:
       100%;
@@ -1496,6 +1940,25 @@ footer {
   .preview-content h3 {
     font-size:
       1.65rem;
+  }
+
+  .review-copy h2 {
+    font-size: 2.1rem;
+  }
+
+  .review-benefits > div {
+    grid-template-columns: 28px 1fr;
+  }
+
+  .demo-content h3 {
+    font-size: 1.45rem;
+  }
+
+  .star-rating button {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    font-size: 1.25rem;
   }
 
 }

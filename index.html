@@ -67,6 +67,10 @@
           Services
         </a>
 
+        <a href="#smart-reviews">
+          Smart Reviews
+        </a>
+
         <a href="#why-us">
           Why Us
         </a>
@@ -403,7 +407,7 @@
               </li>
 
               <li>
-                Document workflows
+                Smart Review QR systems
               </li>
 
               <li>
@@ -412,14 +416,229 @@
 
             </ul>
 
-            <a href="#contact">
-              Automate a workflow →
+            <a href="#smart-reviews">
+              Explore smart reviews →
             </a>
 
           </article>
 
 
         </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         SMART REVIEW QR
+    ========================== -->
+    <section class="section review-section" id="smart-reviews">
+
+      <div class="container review-showcase">
+
+
+        <div class="review-copy">
+
+          <div class="product-pill">
+            <span></span>
+            New from Devlys
+          </div>
+
+          <p class="eyebrow">
+            Smart Review QR
+          </p>
+
+          <h2>
+            Turn a quick scan into a genuine, well-written review.
+          </h2>
+
+          <p class="review-lead">
+            Give customers a branded QR experience that turns their own
+            feedback into an editable review draft, then guides them to your
+            official Google review page.
+          </p>
+
+          <div class="review-benefits">
+
+            <div>
+              <span>01</span>
+              <p>
+                <strong>Scan anywhere</strong>
+                Table cards, counters, receipts or follow-up messages.
+              </p>
+            </div>
+
+            <div>
+              <span>02</span>
+              <p>
+                <strong>Share a real experience</strong>
+                Customers select what stood out and add their own details.
+              </p>
+            </div>
+
+            <div>
+              <span>03</span>
+              <p>
+                <strong>Stay in control</strong>
+                The customer edits, approves and posts the final review.
+              </p>
+            </div>
+
+          </div>
+
+          <div class="review-actions">
+
+            <a
+              href="#contact"
+              class="btn btn-light"
+              data-service="Smart Review QR"
+            >
+              Get Smart Review QR
+            </a>
+
+            <span>
+              No app required · Multi-location ready
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="review-demo" aria-label="Interactive Smart Review QR demo">
+
+          <div class="demo-toolbar">
+
+            <div class="demo-brand">
+              <span>DEV</span>LYS
+            </div>
+
+            <span class="demo-badge">
+              Live demo
+            </span>
+
+          </div>
+
+          <div class="demo-content">
+
+            <div id="reviewQuestions">
+
+              <p class="demo-kicker">
+                Saffron Table · New Delhi
+              </p>
+
+              <h3>
+                How was your experience?
+              </h3>
+
+              <p class="demo-helper">
+                Your answers are used only to create your review draft.
+              </p>
+
+              <div
+                class="star-rating"
+                role="group"
+                aria-label="Select a rating from 1 to 5 stars"
+              >
+
+                <button type="button" data-rating="1" aria-pressed="false" aria-label="1 star">★</button>
+                <button type="button" data-rating="2" aria-pressed="false" aria-label="2 stars">★</button>
+                <button type="button" data-rating="3" aria-pressed="false" aria-label="3 stars">★</button>
+                <button type="button" data-rating="4" aria-pressed="false" aria-label="4 stars">★</button>
+                <button type="button" data-rating="5" aria-pressed="false" aria-label="5 stars">★</button>
+
+              </div>
+
+              <fieldset class="experience-fieldset">
+
+                <legend>
+                  What stood out?
+                </legend>
+
+                <div class="experience-chips">
+
+                  <button type="button" data-topic="food" aria-pressed="false">
+                    Food quality
+                  </button>
+
+                  <button type="button" data-topic="service" aria-pressed="false">
+                    Friendly service
+                  </button>
+
+                  <button type="button" data-topic="ambience" aria-pressed="false">
+                    Ambience
+                  </button>
+
+                  <button type="button" data-topic="value" aria-pressed="false">
+                    Good value
+                  </button>
+
+                </div>
+
+              </fieldset>
+
+              <label class="demo-label" for="reviewDetails">
+                Add something from your visit
+                <textarea
+                  id="reviewDetails"
+                  rows="3"
+                  placeholder="For example: the staff helped us choose a dish…"
+                ></textarea>
+              </label>
+
+              <button type="button" class="demo-primary" id="generateReview">
+                Create my review draft
+                <span aria-hidden="true">→</span>
+              </button>
+
+              <p class="demo-status" id="demoStatus" aria-live="polite"></p>
+
+            </div>
+
+
+            <div id="reviewResult" hidden>
+
+              <div class="draft-success" aria-hidden="true">
+                ✓
+              </div>
+
+              <p class="demo-kicker">
+                Your editable draft
+              </p>
+
+              <h3>
+                Ready when you are.
+              </h3>
+
+              <label class="demo-label" for="reviewDraft">
+                Review and edit before posting
+                <textarea id="reviewDraft" rows="7"></textarea>
+              </label>
+
+              <button type="button" class="demo-primary" id="copyReview">
+                Copy review draft
+                <span aria-hidden="true">↗</span>
+              </button>
+
+              <button type="button" class="demo-reset" id="resetReview">
+                Start again
+              </button>
+
+              <p class="demo-status" id="copyStatus" aria-live="polite"></p>
+
+            </div>
+
+          </div>
+
+          <div class="demo-footer">
+            <span>Customer-written input</span>
+            <span>Editable before posting</span>
+            <span>Same flow for every rating</span>
+          </div>
+
+        </div>
+
 
       </div>
 
@@ -664,7 +883,7 @@
           </p>
 
           <h2>
-            Have a website or software idea?
+            Have a website, smart review or software idea?
           </h2>
 
           <p>
@@ -755,6 +974,10 @@
 
               <option value="AI / Automation">
                 AI / Automation
+              </option>
+
+              <option value="Smart Review QR">
+                Smart Review QR
               </option>
 
               <option value="Not sure yet">
