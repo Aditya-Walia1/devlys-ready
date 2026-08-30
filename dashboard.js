@@ -24,6 +24,10 @@ async function api(path, options = {}) {
     ...options,
     headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
   });
+  const contentType = response.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    throw new Error('The review service returned an unexpected response.');
+  }
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
     const requestError = new Error(payload.error || 'Please try again.');
@@ -134,21 +138,23 @@ async function createLocationCard(location) {
 }
 
 async function renderDashboard(data) {
+  const totals = data?.totals || { scans: 0, drafts: 0, handoffs: 0 };
+  const locations = Array.isArray(data?.locations) ? data.locations : [];
   title.textContent = data.business ? `${data.business.name} reviews` : 'Review operations';
   subtitle.textContent = data.business?.email
     ? `Signed in as ${data.business.email}`
     : 'Create your first location to begin.';
-  scans.textContent = String(data.totals.scans);
-  drafts.textContent = String(data.totals.drafts);
-  handoffs.textContent = String(data.totals.handoffs);
-  conversion.textContent = data.totals.scans
-    ? `${Math.round((data.totals.handoffs / data.totals.scans) * 100)}%`
+  scans.textContent = String(totals.scans);
+  drafts.textContent = String(totals.drafts);
+  handoffs.textContent = String(totals.handoffs);
+  conversion.textContent = totals.scans
+    ? `${Math.round((totals.handoffs / totals.scans) * 100)}%`
     : '0%';
-  locationCount.textContent = `${data.locations.length} ${data.locations.length === 1 ? 'location' : 'locations'}`;
+  locationCount.textContent = `${locations.length} ${locations.length === 1 ? 'location' : 'locations'}`;
   locationsGrid.replaceChildren();
-  empty.hidden = data.locations.length > 0;
+  empty.hidden = locations.length > 0;
 
-  const cards = await Promise.all(data.locations.map(createLocationCard));
+  const cards = await Promise.all(locations.map(createLocationCard));
   locationsGrid.append(...cards);
 }
 
