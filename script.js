@@ -115,10 +115,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const topicPhrases = {
-    food: 'the quality of the food',
-    service: 'the friendly service',
-    ambience: 'the welcoming ambience',
-    value: 'the overall value',
+    food: 'food',
+    service: 'service',
+    ambience: 'ambience',
+    value: 'value for money',
   };
 
   const formatList = (items) => {
@@ -140,41 +140,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const detail = reviewDetails?.value.trim() ?? '';
     const highlightText = formatList(highlights);
 
-    const openings = {
-      1: 'Unfortunately, my experience at Saffron Table fell short of expectations.',
-      2: 'My visit to Saffron Table had a few positives, but there were also important issues.',
-      3: 'My experience at Saffron Table was mixed overall.',
-      4: 'I had a good experience at Saffron Table.',
-      5: 'I had a great experience at Saffron Table.',
+    const topicSentences = {
+      1: `${highlightText || 'The overall experience'} did not meet my expectations.`,
+      2: `${highlightText || 'The overall experience'} needs more consistency.`,
+      3: `${highlightText || 'The visit'} left me with a mixed impression.`,
+      4: `${highlightText || 'The overall experience'} was a strong part of the visit.`,
+      5: `I especially appreciated ${highlightText || 'the care put into the experience'}.`,
     };
-
     const closings = {
-      1: 'I hope the team takes this feedback on board.',
-      2: 'There is room to improve, and I hope my next visit is better.',
-      3: 'With a few improvements, the experience could be even better.',
-      4: 'I would be happy to visit again.',
-      5: 'I would happily recommend it and visit again.',
+      1: 'I hope the team addresses these points for future customers.',
+      2: 'There is clear room to improve before I would return.',
+      3: 'A few focused improvements would make the next visit stronger.',
+      4: 'I would return and expect the experience to become even better.',
+      5: 'The visit felt personal and worth repeating.',
     };
-
-    const sentences = [openings[selectedRating]];
-
-    if (highlightText) {
-      sentences.push(`What stood out to me was ${highlightText}.`);
-    }
-
-    if (detail) {
-      const cleanDetail = /[.!?]$/.test(detail) ? detail : `${detail}.`;
-      sentences.push(cleanDetail.charAt(0).toUpperCase() + cleanDetail.slice(1));
-    }
-
+    const lowerDetail = detail.charAt(0).toLowerCase() + detail.slice(1);
+    const cleanDetail = /[.!?]$/.test(lowerDetail) ? lowerDetail : `${lowerDetail}.`;
+    const sentences = [`At Saffron Table, ${cleanDetail}`, topicSentences[selectedRating]];
     sentences.push(closings[selectedRating]);
 
     return sentences.join(' ');
   };
 
   generateReview?.addEventListener('click', () => {
-    const hasExperienceInput =
-      selectedTopics.size > 0 || (reviewDetails?.value.trim().length ?? 0) >= 10;
+    const hasExperienceInput = (reviewDetails?.value.trim().length ?? 0) >= 10;
 
     if (!selectedRating) {
       if (demoStatus) {
@@ -187,9 +176,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!hasExperienceInput) {
       if (demoStatus) {
         demoStatus.textContent =
-          'Select what stood out or add a short detail from your visit.';
+          'Add one specific moment from your visit (at least 10 characters).';
       }
-      topicButtons[0]?.focus();
+      reviewDetails?.focus();
       return;
     }
 

@@ -27,12 +27,27 @@
         Apply with your business and Google review details. Devlys reviews the application,
         confirms your quote, creates the QR journey and activates it after payment verification.
       </p>
-      <ol class="enrollment-steps">
-        <li><span>01</span><div><strong>Apply</strong><small>Tell us about the business and first location.</small></div></li>
-        <li><span>02</span><div><strong>Approve & pay</strong><small>Devlys confirms the six-month quote and payment route.</small></div></li>
-        <li><span>03</span><div><strong>Activate</strong><small>We activate the reusable QR and your client dashboard.</small></div></li>
-        <li><span>04</span><div><strong>Renew</strong><small>Renewal extends the same QR—nothing needs reprinting.</small></div></li>
-      </ol>
+      <div class="role-guide">
+        <article>
+          <span class="status-pill is-admin">Devlys owner does</span>
+          <ol>
+            <li>Reviews and approves the business application.</li>
+            <li>Sets the six-month quote and secure payment route.</li>
+            <li>Creates every location and reusable QR code.</li>
+            <li>Verifies payment, activates service and processes renewals.</li>
+          </ol>
+        </article>
+        <article>
+          <span class="status-pill">Business customer does</span>
+          <ol>
+            <li>Submits accurate business and Google review details.</li>
+            <li>Pays Devlys and submits the transaction reference.</li>
+            <li>Downloads, prints and displays the Devlys-created QR.</li>
+            <li>Monitors results and renews before the term ends.</li>
+          </ol>
+        </article>
+      </div>
+      <p class="scanner-note"><strong>The reviewing customer only:</strong> scans, shares genuine visit details, edits the draft and chooses whether to post it on Google.</p>
       <div class="plan-summary">
         <span>Starter · 1 location</span>
         <span>Growth · up to 3 locations</span>
@@ -44,7 +59,7 @@
       <div id="enrollmentFormPanel">
         <p class="review-overline">Business application</p>
         <h2>Start your enrollment</h2>
-        <p>There is no charge at this step. Devlys confirms the quote before activation.</p>
+        <p>Your responsibility here is only to provide accurate information. Devlys creates and activates the QR after reviewing your application and payment.</p>
         <form id="enrollmentForm">
           <div class="dashboard-form-grid">
             <label>Business name<input name="businessName" autocomplete="organization" required /></label>
@@ -81,11 +96,16 @@
       <div class="enrollment-success" id="enrollmentSuccess" hidden>
         <div class="result-check">✓</div>
         <p class="review-overline">Application received</p>
-        <h2>Devlys will review your setup.</h2>
+        <h2>No action is required from you yet.</h2>
         <p>Keep this application reference for your records:</p>
         <strong id="applicationReference"></strong>
-        <p>Once approved, sign in with the same email address to see the quote, payment status and QR service.</p>
-        <a class="app-primary-button" href="/dashboard">Open client login</a>
+        <ol class="success-next-steps">
+          <li><span>1</span><div><strong>Devlys reviews the application</strong><small>We verify the business, location and Google review link.</small></div></li>
+          <li><span>2</span><div><strong>Devlys sends your quote</strong><small>You receive the six-month amount and approved payment route.</small></div></li>
+          <li><span>3</span><div><strong>Sign in only after approval</strong><small>Use this same email to view payment and your assigned QR service.</small></div></li>
+        </ol>
+        <p class="approval-warning"><strong>Do not open the client dashboard yet.</strong> Your account is created only after a Devlys owner approves this application.</p>
+        <a class="app-primary-button" href="/">Return to Devlys website</a>
       </div>
     </section>
   </main>

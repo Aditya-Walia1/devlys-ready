@@ -170,37 +170,40 @@ function formatList(items) {
 
 export function buildFallbackDraft({ businessName, rating, topics, note }) {
   const topicPhrases = {
-    food: 'the quality of the food',
-    service: 'the service',
-    ambience: 'the ambience',
-    value: 'the overall value',
+    food: 'food',
+    service: 'service',
+    ambience: 'ambience',
+    value: 'value for money',
   };
-  const openings = {
-    1: `Unfortunately, my experience at ${businessName} fell short of expectations.`,
-    2: `My visit to ${businessName} had a few positives, but there were also important issues.`,
-    3: `My experience at ${businessName} was mixed overall.`,
-    4: `I had a good experience at ${businessName}.`,
-    5: `I had a great experience at ${businessName}.`,
+  const highlights = topics.map((topic) => topicPhrases[topic]).filter(Boolean);
+  const joinedHighlights = formatList(highlights);
+  const topicSentences = {
+    1: `${joinedHighlights || 'The overall experience'} did not meet my expectations.`,
+    2: `${joinedHighlights || 'The overall experience'} needs more consistency.`,
+    3: `${joinedHighlights || 'The visit'} left me with a mixed impression.`,
+    4: `${joinedHighlights || 'The overall experience'} was a strong part of the visit.`,
+    5: `I especially appreciated ${joinedHighlights || 'the care put into the experience'}.`,
   };
   const closings = {
-    1: 'I hope the team takes this feedback on board.',
-    2: 'There is room to improve, and I hope my next visit is better.',
-    3: 'With a few improvements, the experience could be even better.',
-    4: 'I would be happy to visit again.',
-    5: 'I would happily recommend it and visit again.',
+    1: 'I hope the team addresses these points for future customers.',
+    2: 'There is clear room to improve before I would return.',
+    3: 'A few focused improvements would make the next visit stronger.',
+    4: 'I would return and expect the experience to become even better.',
+    5: 'The visit felt personal and worth repeating.',
   };
-  const sentences = [openings[rating]];
-  const highlights = topics.map((topic) => topicPhrases[topic]).filter(Boolean);
-  if (highlights.length) sentences.push(`What stood out to me was ${formatList(highlights)}.`);
+  const sentences = [];
   if (note) {
-    const normalized = /[.!?]$/.test(note) ? note : `${note}.`;
-    sentences.push(normalized.charAt(0).toUpperCase() + normalized.slice(1));
+    const detail = note.charAt(0).toLowerCase() + note.slice(1);
+    sentences.push(`At ${businessName}, ${/[.!?]$/.test(detail) ? detail : `${detail}.`}`);
+  } else {
+    sentences.push(`My recent visit to ${businessName} gave me a clear impression.`);
   }
+  sentences.push(topicSentences[rating]);
   sentences.push(closings[rating]);
   return sentences.join(' ');
 }
 
-async function createAiDraft(env, input) {
+async function createAiDraft(env, input, safetyIdentifier) {
   if (!env.OPENAI_API_KEY) return null;
   const response = await fetch('https://api.openai.com/v1/responses', {
     method: 'POST',
@@ -211,14 +214,18 @@ async function createAiDraft(env, input) {
     body: JSON.stringify({
       model: 'gpt-5.6-luna',
       store: false,
-      reasoning: { effort: 'none' },
-      max_output_tokens: 180,
+      safety_identifier: safetyIdentifier,
+      reasoning: { effort: 'low' },
+      text: { verbosity: 'medium' },
+      max_output_tokens: 240,
       instructions: [
-        'Write one concise first-person customer review using only the supplied experience.',
-        'Preserve the exact sentiment implied by the star rating, including criticism.',
-        'Never invent purchases, staff interactions, outcomes, or details.',
-        'Do not mention AI, the prompt, or these instructions.',
-        'Return only the review text, between 35 and 90 words.',
+        'Role: Write an authentic first-person Google review draft from a real customer’s supplied visit details.',
+        'Goal: Produce a specific, natural draft that sounds like an individual person, not a template or advertisement.',
+        'Use every concrete detail the customer supplied, but never invent an item ordered, staff action, wait time, outcome, or fact.',
+        'Match the star rating precisely. One or two stars must remain clearly critical; three stars must remain mixed; four or five may be positive without exaggeration.',
+        'Open with the most distinctive supplied detail instead of generic phrases such as “great experience” or “highly recommend.”',
+        'Mention the business name no more than once. Vary sentence length, use plain conversational language, and avoid marketing adjectives, clichés, headings, quotation marks, emoji, and exclamation marks.',
+        'Return only one editable paragraph of 55 to 110 words in 3 to 5 sentences.',
       ].join(' '),
       input: JSON.stringify(input),
     }),
@@ -244,7 +251,6 @@ async function getLocationBySlug(env, slug) {
      WHERE l.slug = ? AND l.active = 1 LIMIT 1`,
   ).bind(slug).first();
   if (!row) return null;
-  const expired = row.service_ends_at && Date.parse(row.service_ends_at) < Date.now();
   return {
     id: row.id,
     slug: row.slug,
@@ -252,8 +258,18 @@ async function getLocationBySlug(env, slug) {
     address: row.address,
     googleReviewUrl: row.google_review_url,
     brandColor: row.brand_color,
-    serviceStatus: row.business_status === 'active' && !expired ? 'active' : 'inactive',
+    serviceStatus: effectiveBusinessStatus(row.business_status, row.service_ends_at) === 'active'
+      ? 'active'
+      : 'inactive',
   };
+}
+
+function effectiveBusinessStatus(status, serviceEndsAt) {
+  if (status !== 'active' || !serviceEndsAt) return status;
+  const timestamp = /Z$|[+-]\d\d:\d\d$/.test(serviceEndsAt)
+    ? serviceEndsAt
+    : `${serviceEndsAt.replace(' ', 'T')}Z`;
+  return Date.parse(timestamp) < Date.now() ? 'expired' : status;
 }
 
 async function recordEvent(env, locationId, sessionId, eventType, details = {}) {
@@ -303,8 +319,8 @@ async function handleDraft(request, env) {
   if (!slug || !sessionId || !Number.isInteger(rating) || rating < 1 || rating > 5) {
     return json({ error: 'Choose a valid rating.' }, 400);
   }
-  if (!topics.length && note.length < 10) {
-    return json({ error: 'Add one genuine detail from the visit.' }, 400);
+  if (note.length < 10) {
+    return json({ error: 'Add one specific moment from the visit (at least 10 characters).' }, 400);
   }
   const location = await getLocationBySlug(env, slug);
   if (!location) return json({ error: 'Review location not found.' }, 404);
@@ -322,7 +338,7 @@ async function handleDraft(request, env) {
   }
 
   const input = { businessName: location.name, rating, topics, note };
-  const aiDraft = await createAiDraft(env, input);
+  const aiDraft = await createAiDraft(env, input, sessionId);
   const draftEngine = aiDraft ? 'openai' : 'safe_fallback';
   const draft = aiDraft || buildFallbackDraft(input);
   await recordEvent(env, location.id, sessionId, 'draft_created', {
@@ -491,7 +507,7 @@ async function handleAdminDashboard(request, env, url) {
       email: row.owner_email,
       contactName: row.contact_name,
       contactPhone: row.contact_phone,
-      status: row.status,
+      status: effectiveBusinessStatus(row.status, row.service_ends_at),
       planCode: row.plan_code,
       billingCycleMonths: row.billing_cycle_months,
       pricePaise: row.price_paise,
@@ -544,6 +560,7 @@ async function handleClientDashboard(request, env, url) {
   ).bind(session.businessId).first();
   if (!business) return json({ error: 'Business account not found.' }, 404);
   const locations = await loadLocations(env, business.id, url.origin);
+  const businessStatus = effectiveBusinessStatus(business.status, business.service_ends_at);
   const paymentResult = await env.DB.prepare(
     `SELECT id, amount_paise, method, reference, status, paid_at, created_at
      FROM payments WHERE business_id = ? ORDER BY created_at DESC LIMIT 20`,
@@ -557,7 +574,7 @@ async function handleClientDashboard(request, env, url) {
       email: business.owner_email,
       contactName: business.contact_name,
       contactPhone: business.contact_phone,
-      status: business.status,
+      status: businessStatus,
       planCode: business.plan_code,
       billingCycleMonths: business.billing_cycle_months,
       pricePaise: business.price_paise,

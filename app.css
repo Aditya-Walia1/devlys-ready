@@ -881,6 +881,25 @@ body.enrollment-page {
   font-weight: 700;
 }
 
+.role-guide { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 30px; }
+.role-guide article {
+  padding: 17px;
+  border: 1px solid #dbe2ed;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.78);
+}
+.role-guide ol { margin: 14px 0 0; padding-left: 20px; }
+.role-guide li { margin-top: 8px; color: #536073; font-size: 0.69rem; }
+.scanner-note {
+  margin: 13px 0 0;
+  padding: 13px 15px;
+  border-left: 3px solid var(--app-accent);
+  border-radius: 0 10px 10px 0;
+  background: #eef2ff;
+  color: #45526a;
+  font-size: 0.7rem;
+}
+
 .enrollment-card {
   padding: clamp(26px, 5vw, 48px);
   border: 1px solid var(--app-line);
@@ -990,6 +1009,25 @@ body.enrollment-page {
   overflow-wrap: anywhere;
 }
 .enrollment-success .app-primary-button { margin-top: 24px; text-decoration: none; }
+.success-next-steps { display: grid; gap: 10px; margin: 22px 0; padding: 0; list-style: none; text-align: left; }
+.success-next-steps li { display: flex; gap: 12px; padding: 12px; border-radius: 11px; background: #f7f9fc; }
+.success-next-steps li > span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 8px;
+  background: #111827;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+.success-next-steps strong,
+.success-next-steps small { display: block; }
+.success-next-steps strong { font-size: 0.77rem; }
+.success-next-steps small { margin-top: 2px; color: var(--app-muted); font-size: 0.66rem; }
+.approval-warning { padding: 12px; border-radius: 10px; background: #fff3d6; color: #76500a !important; }
 
 .role-line { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .role-line small { color: var(--app-muted); font-size: 0.72rem; }
@@ -1016,6 +1054,36 @@ body.enrollment-page {
 .status-pill.is-expired { background: #fee9e7; color: #9b2c24; }
 
 .commercial-section { margin-top: 48px; }
+.role-workflow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: -4px 0 30px;
+}
+.role-workflow > div {
+  min-height: 120px;
+  padding: 17px;
+  border: 1px solid #dbe4fb;
+  border-radius: 14px;
+  background: #f8faff;
+}
+.role-workflow.is-client > div { border-color: #d9e7df; background: #f6fbf8; }
+.role-workflow span {
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  background: #111827;
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+.role-workflow strong,
+.role-workflow small { display: block; }
+.role-workflow strong { font-family: 'Manrope', sans-serif; font-size: 0.78rem; }
+.role-workflow small { margin-top: 3px; color: var(--app-muted); font-size: 0.65rem; }
 .application-grid,
 .business-grid { display: grid; gap: 18px; margin-top: 22px; }
 
@@ -1151,6 +1219,7 @@ body.enrollment-page {
   .subscription-card { grid-template-columns: 1fr; }
   .payment-panel { grid-template-columns: 1fr; }
   .embedded-location-grid { grid-template-columns: 1fr; }
+  .role-workflow { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 620px) {
@@ -1185,6 +1254,8 @@ body.enrollment-page {
   .service-summary,
   .activation-panel { padding-left: 18px; padding-right: 18px; }
   .add-location-panel { margin-left: 18px; margin-right: 18px; }
+  .role-guide,
+  .role-workflow { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

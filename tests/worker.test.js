@@ -59,9 +59,10 @@ test('fallback draft preserves negative sentiment and supplied detail', () => {
     topics: ['service'],
     note: 'We waited forty minutes for our table',
   });
-  assert.match(draft, /fell short/i);
+  assert.match(draft, /did not meet my expectations/i);
   assert.match(draft, /waited forty minutes/i);
   assert.doesNotMatch(draft, /recommend/i);
+  assert.doesNotMatch(draft, /great experience|what stood out/i);
 });
 
 test('Google review URL validation rejects arbitrary redirects', () => {
@@ -92,6 +93,24 @@ test('demo draft endpoint completes without storing personal text', async () => 
   const payload = await response.json();
   assert.equal(payload.engine, 'safe_fallback');
   assert.match(payload.draft, /family dinner feel special/i);
+});
+
+test('draft quality gate requires a specific customer moment', async () => {
+  const response = await worker.fetch(
+    request('/api/drafts', {
+      method: 'POST',
+      body: {
+        slug: 'demo',
+        sessionId: 'quality-session',
+        rating: 5,
+        topics: ['food', 'service'],
+        note: '',
+      },
+    }),
+    {},
+  );
+  assert.equal(response.status, 400);
+  assert.match((await response.json()).error, /specific moment/i);
 });
 
 test('only a Devlys owner can approve clients or create QR locations', async () => {
@@ -200,6 +219,28 @@ test('commercial lifecycle enrolls, pays, activates, tracks, renews, and reuses 
       { DB: database },
     );
     assert.equal(activeQrResponse.status, 200);
+
+    await database.prepare(
+      `UPDATE businesses SET service_ends_at = '2000-01-01 00:00:00' WHERE id = ?`,
+    ).bind(approved.businessId).run();
+    const expiredClientDashboard = await worker.fetch(
+      request('/api/client/dashboard', { headers: clientHeaders }),
+      { DB: database },
+    );
+    assert.equal((await expiredClientDashboard.json()).business.status, 'expired');
+    const expiredAdminDashboard = await worker.fetch(
+      request('/api/admin/dashboard', { headers: adminHeaders }),
+      { DB: database },
+    );
+    assert.equal((await expiredAdminDashboard.json()).businesses[0].status, 'expired');
+    const expiredQrResponse = await worker.fetch(
+      request(`/api/locations/${originalSlug}`),
+      { DB: database },
+    );
+    assert.equal(expiredQrResponse.status, 402);
+    await database.prepare(
+      'UPDATE businesses SET service_ends_at = ? WHERE id = ?',
+    ).bind(activation.service_ends_at, approved.businessId).run();
 
     for (const eventType of ['scan', 'google_open']) {
       const eventResponse = await worker.fetch(
