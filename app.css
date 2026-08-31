@@ -808,6 +808,332 @@ body.dashboard-page {
   font-size: 0.8rem;
 }
 
+/* Commercial enrollment and role-based operations */
+
+body.enrollment-page {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--app-text);
+  background:
+    radial-gradient(circle at 8% 12%, rgba(49, 94, 251, 0.16), transparent 30%),
+    #f4f6f9;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+}
+
+.enrollment-shell {
+  width: min(1180px, calc(100% - 40px));
+  display: grid;
+  grid-template-columns: 0.86fr 1.14fr;
+  gap: clamp(36px, 7vw, 90px);
+  align-items: start;
+  margin: 0 auto;
+  padding: 70px 0 90px;
+}
+
+.enrollment-intro { position: sticky; top: 42px; padding-top: 20px; }
+
+.enrollment-intro h1 {
+  margin: 10px 0 18px;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(2.6rem, 5.5vw, 4.8rem);
+  letter-spacing: -0.065em;
+  line-height: 0.96;
+}
+
+.enrollment-lead {
+  max-width: 560px;
+  margin: 0 0 32px;
+  color: var(--app-muted);
+  font-size: 0.94rem;
+}
+
+.enrollment-steps { display: grid; gap: 18px; margin: 0; padding: 0; list-style: none; }
+
+.enrollment-steps li { display: flex; gap: 15px; align-items: flex-start; }
+
+.enrollment-steps li > span {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 12px;
+  background: #111827;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.enrollment-steps strong,
+.enrollment-steps small { display: block; }
+.enrollment-steps strong { font-family: 'Manrope', sans-serif; font-size: 0.88rem; }
+.enrollment-steps small { margin-top: 2px; color: var(--app-muted); font-size: 0.72rem; }
+
+.plan-summary { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 30px; }
+.plan-summary span {
+  padding: 7px 10px;
+  border: 1px solid #dbe2ed;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #536073;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.enrollment-card {
+  padding: clamp(26px, 5vw, 48px);
+  border: 1px solid var(--app-line);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: var(--app-shadow);
+}
+
+.enrollment-card h2,
+.commercial-section h2,
+.subscription-card h2,
+.payment-panel h2 {
+  margin: 5px 0 6px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.55rem;
+  letter-spacing: -0.04em;
+}
+
+.enrollment-card > div > p:not(.review-overline),
+.subscription-card > div > p:not(.review-overline),
+.payment-panel > div > p:not(.review-overline) {
+  margin: 0;
+  color: var(--app-muted);
+  font-size: 0.8rem;
+}
+
+#enrollmentForm,
+.approval-form,
+.manual-payment-form,
+.business-location-form,
+#paymentForm {
+  display: grid;
+  gap: 15px;
+}
+
+#enrollmentForm { margin-top: 26px; }
+.approval-form { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--app-line); }
+.business-location-form { margin-top: 16px; }
+
+#enrollmentForm label,
+.approval-form label,
+.manual-payment-form label,
+.business-location-form label,
+#paymentForm label {
+  display: grid;
+  gap: 7px;
+  color: #344054;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+#enrollmentForm input,
+#enrollmentForm select,
+.approval-form input,
+.approval-form select,
+.manual-payment-form input,
+.manual-payment-form select,
+.business-location-form input,
+.business-location-form select,
+#paymentForm input,
+#paymentForm select {
+  width: 100%;
+  min-height: 45px;
+  padding: 0 12px;
+  border: 1px solid #d3dae6;
+  border-radius: 9px;
+  outline: none;
+  background: #fff;
+  color: var(--app-text);
+}
+
+#enrollmentForm input:focus,
+#enrollmentForm select:focus,
+.approval-form input:focus,
+.approval-form select:focus,
+.manual-payment-form input:focus,
+.manual-payment-form select:focus,
+.business-location-form input:focus,
+#paymentForm input:focus,
+#paymentForm select:focus {
+  border-color: var(--app-accent);
+  box-shadow: 0 0 0 3px rgba(49, 94, 251, 0.1);
+}
+
+#enrollmentForm label small { color: var(--app-muted); font-size: 0.65rem; font-weight: 500; }
+
+#enrollmentForm .consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+#enrollmentForm .consent-row input { width: 17px; min-height: 17px; margin-top: 2px; }
+
+.enrollment-success { min-height: 500px; align-content: center; text-align: center; }
+.enrollment-success .result-check { margin: 0 auto 20px; }
+.enrollment-success > strong {
+  display: block;
+  margin: 20px 0;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f3f5f9;
+  font-family: monospace;
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+.enrollment-success .app-primary-button { margin-top: 24px; text-decoration: none; }
+
+.role-line { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.role-line small { color: var(--app-muted); font-size: 0.72rem; }
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #294ac1;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.status-pill.is-admin,
+.status-pill.is-active { background: #dcf7ea; color: #11603e; }
+.status-pill.is-pending_payment,
+.status-pill.is-submitted { background: #fff3d6; color: #8a5a00; }
+.status-pill.is-suspended,
+.status-pill.is-expired { background: #fee9e7; color: #9b2c24; }
+
+.commercial-section { margin-top: 48px; }
+.application-grid,
+.business-grid { display: grid; gap: 18px; margin-top: 22px; }
+
+.application-card,
+.business-card,
+.subscription-card,
+.payment-panel {
+  border: 1px solid var(--app-line);
+  border-radius: 18px;
+  background: #fff;
+}
+
+.application-card { padding: 24px; }
+.business-card { overflow: hidden; }
+
+.commercial-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.business-card > .commercial-card-header { padding: 24px 26px; border-bottom: 1px solid #edf0f5; }
+
+.commercial-card-header h3 {
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.13rem;
+  letter-spacing: -0.03em;
+}
+
+.commercial-card-header p { margin: 3px 0 0; color: var(--app-muted); font-size: 0.72rem; }
+
+.commercial-meta,
+.service-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 20px 0 0;
+}
+
+.commercial-meta div,
+.service-summary div { min-width: 0; }
+.commercial-meta dt,
+.service-summary span { display: block; color: var(--app-muted); font-size: 0.62rem; font-weight: 700; }
+.commercial-meta dd,
+.service-summary strong { display: block; margin: 4px 0 0; font-size: 0.74rem; overflow-wrap: anywhere; }
+
+.service-summary { margin: 0; padding: 20px 26px; background: #f8f9fb; }
+
+.form-action-row { display: flex; align-items: end; justify-content: space-between; gap: 16px; }
+.form-action-row label { width: 120px; }
+.form-action-row input[type='color'],
+.business-location-form input[type='color'] { padding: 6px; cursor: pointer; }
+
+.activation-panel { padding: 22px 26px; border-top: 1px solid #edf0f5; border-bottom: 1px solid #edf0f5; }
+.activation-panel > div:first-child strong,
+.activation-panel > div:first-child small { display: block; }
+.activation-panel > div:first-child small { margin-top: 2px; color: var(--app-muted); font-size: 0.68rem; }
+.manual-payment-form { grid-template-columns: 0.55fr 1fr auto; align-items: end; margin-top: 15px; }
+.manual-payment-form .dashboard-form-status { grid-column: 1 / -1; }
+
+.pending-payment-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px 20px;
+  align-items: center;
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 11px;
+  background: #fff8e8;
+}
+.pending-payment-row strong,
+.pending-payment-row small { display: block; }
+.pending-payment-row small { margin-top: 3px; color: var(--app-muted); font-size: 0.66rem; }
+.pending-payment-row .dashboard-form-status { grid-column: 1 / -1; }
+
+.embedded-heading { padding: 22px 26px 0; }
+.embedded-location-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  padding: 18px 26px 24px;
+}
+.embedded-location-grid .location-card { box-shadow: 0 8px 28px rgba(17, 24, 39, 0.05); }
+
+.add-location-panel { margin: 0 26px 26px; padding: 16px; border: 1px dashed #cdd5e3; border-radius: 12px; }
+.add-location-panel summary { color: var(--app-accent); cursor: pointer; font-size: 0.74rem; font-weight: 800; }
+
+.subscription-card {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr auto;
+  gap: 28px;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 28px;
+  border-color: #f0d89d;
+  background: #fffaf0;
+}
+.subscription-card.is-active { border-color: #b9e7d2; background: #f2fbf7; }
+.subscription-card dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 0; }
+.subscription-card dl div { min-width: 0; }
+.subscription-card dt { color: var(--app-muted); font-size: 0.62rem; font-weight: 700; }
+.subscription-card dd { margin: 4px 0 0; font-size: 0.75rem; font-weight: 800; }
+.subscription-card .app-primary-button { min-width: 150px; padding: 0 18px; text-decoration: none; }
+
+.payment-panel {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 42px;
+  padding: 26px 28px;
+}
+#paymentForm { grid-template-columns: 0.65fr 1fr auto; align-items: end; }
+#paymentForm .dashboard-form-status { grid-column: 1 / -1; }
+.dashboard-form-status.is-success { color: var(--app-success); }
+
 @media (max-width: 560px) {
   .review-app-shell { width: min(100% - 20px, 720px); padding-top: 16px; }
   .review-app-header { padding: 0 5px; }
@@ -820,6 +1146,11 @@ body.dashboard-page {
 @media (max-width: 900px) {
   .metric-grid { grid-template-columns: repeat(2, 1fr); }
   .locations-grid { grid-template-columns: 1fr; }
+  .enrollment-shell { grid-template-columns: 1fr; }
+  .enrollment-intro { position: static; }
+  .subscription-card { grid-template-columns: 1fr; }
+  .payment-panel { grid-template-columns: 1fr; }
+  .embedded-location-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 620px) {
@@ -837,6 +1168,23 @@ body.dashboard-page {
   .location-card-body { grid-template-columns: 116px 1fr; gap: 14px; }
   .location-card-body img { width: 116px; height: 116px; }
   .dashboard-auth, .dashboard-error { min-height: 420px; padding: 34px 22px; }
+  .enrollment-shell { width: min(100% - 24px, 1180px); padding-top: 38px; }
+  .enrollment-card { padding: 25px 18px; }
+  .commercial-meta,
+  .service-summary { grid-template-columns: repeat(2, 1fr); }
+  .commercial-card-header { align-items: flex-start; flex-direction: column; }
+  .form-action-row { align-items: stretch; flex-direction: column; }
+  .manual-payment-form,
+  #paymentForm { grid-template-columns: 1fr; }
+  .manual-payment-form .dashboard-form-status,
+  #paymentForm .dashboard-form-status { grid-column: 1; }
+  .pending-payment-row { grid-template-columns: 1fr; }
+  .pending-payment-row .dashboard-form-status { grid-column: 1; }
+  .embedded-location-grid { padding: 16px; }
+  .business-card > .commercial-card-header,
+  .service-summary,
+  .activation-panel { padding-left: 18px; padding-right: 18px; }
+  .add-location-panel { margin-left: 18px; margin-right: 18px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

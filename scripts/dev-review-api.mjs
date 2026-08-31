@@ -1,11 +1,12 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 import worker from '../worker/index.js';
 
-const migration = readFileSync(
-  new URL('../drizzle/0000_chief_princess_powerful.sql', import.meta.url),
-  'utf8',
-);
+const migrationsDirectory = new URL('../drizzle/', import.meta.url);
+const migrations = readdirSync(migrationsDirectory)
+  .filter((name) => /^\d+.*\.sql$/.test(name))
+  .sort()
+  .map((name) => readFileSync(new URL(name, migrationsDirectory), 'utf8'));
 
 class DevD1Statement {
   constructor(database, sql) {
@@ -42,15 +43,29 @@ export async function createDevDatabase() {
   const { DatabaseSync } = await import('node:sqlite');
   const database = new DatabaseSync(':memory:');
   database.exec('PRAGMA foreign_keys = ON');
-  migration
-    .split('--> statement-breakpoint')
-    .map((statement) => statement.trim())
-    .filter(Boolean)
-    .forEach((statement) => database.exec(statement));
+  migrations.forEach((migration) => {
+    migration
+      .split('--> statement-breakpoint')
+      .map((statement) => statement.trim())
+      .filter(Boolean)
+      .forEach((statement) => database.exec(statement));
+  });
 
   return {
     prepare(sql) {
       return new DevD1Statement(database, sql);
+    },
+    async batch(statements) {
+      database.exec('BEGIN');
+      try {
+        const results = [];
+        for (const statement of statements) results.push(await statement.run());
+        database.exec('COMMIT');
+        return results;
+      } catch (error) {
+        database.exec('ROLLBACK');
+        throw error;
+      }
     },
     close() {
       database.close();

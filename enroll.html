@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Enroll your business in Devlys Smart Review QR." />
+  <title>Enroll in Smart Review QR · Devlys</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body class="enrollment-page">
+  <header class="dashboard-topbar">
+    <a href="/" class="app-logo"><span>DEV</span>LYS</a>
+    <nav>
+      <a href="/r/demo">Try customer demo</a>
+      <a href="/dashboard">Client login</a>
+    </nav>
+  </header>
+
+  <main class="enrollment-shell">
+    <section class="enrollment-intro">
+      <p class="review-overline">Smart Review QR enrollment</p>
+      <h1>One QR journey.<br>Six months of service.</h1>
+      <p class="enrollment-lead">
+        Apply with your business and Google review details. Devlys reviews the application,
+        confirms your quote, creates the QR journey and activates it after payment verification.
+      </p>
+      <ol class="enrollment-steps">
+        <li><span>01</span><div><strong>Apply</strong><small>Tell us about the business and first location.</small></div></li>
+        <li><span>02</span><div><strong>Approve & pay</strong><small>Devlys confirms the six-month quote and payment route.</small></div></li>
+        <li><span>03</span><div><strong>Activate</strong><small>We activate the reusable QR and your client dashboard.</small></div></li>
+        <li><span>04</span><div><strong>Renew</strong><small>Renewal extends the same QR—nothing needs reprinting.</small></div></li>
+      </ol>
+      <div class="plan-summary">
+        <span>Starter · 1 location</span>
+        <span>Growth · up to 3 locations</span>
+        <span>Scale · up to 10 locations</span>
+      </div>
+    </section>
+
+    <section class="enrollment-card" id="enrollmentCard">
+      <div id="enrollmentFormPanel">
+        <p class="review-overline">Business application</p>
+        <h2>Start your enrollment</h2>
+        <p>There is no charge at this step. Devlys confirms the quote before activation.</p>
+        <form id="enrollmentForm">
+          <div class="dashboard-form-grid">
+            <label>Business name<input name="businessName" autocomplete="organization" required /></label>
+            <label>Contact person<input name="contactName" autocomplete="name" required /></label>
+          </div>
+          <div class="dashboard-form-grid">
+            <label>Business email<input name="contactEmail" type="email" autocomplete="email" required /></label>
+            <label>Phone / WhatsApp<input name="contactPhone" autocomplete="tel" required /></label>
+          </div>
+          <label>First location name<input name="locationName" placeholder="Example: Connaught Place branch" required /></label>
+          <label>Location address<input name="address" autocomplete="street-address" required /></label>
+          <label>
+            Official Google review link
+            <input name="googleReviewUrl" type="url" placeholder="https://g.page/r/…/review" required />
+            <small>Get this from your Google Business Profile’s “Ask for reviews” option.</small>
+          </label>
+          <label>
+            Preferred plan
+            <select name="planCode" required>
+              <option value="starter">Starter · 1 location</option>
+              <option value="growth" selected>Growth · up to 3 locations</option>
+              <option value="scale">Scale · up to 10 locations</option>
+            </select>
+          </label>
+          <label class="consent-row">
+            <input name="consent" type="checkbox" required />
+            <span>I confirm these business details are accurate and Devlys may contact me about this application.</span>
+          </label>
+          <button type="submit" class="app-primary-button">Submit enrollment</button>
+          <p class="dashboard-form-status" id="enrollmentStatus" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <div class="enrollment-success" id="enrollmentSuccess" hidden>
+        <div class="result-check">✓</div>
+        <p class="review-overline">Application received</p>
+        <h2>Devlys will review your setup.</h2>
+        <p>Keep this application reference for your records:</p>
+        <strong id="applicationReference"></strong>
+        <p>Once approved, sign in with the same email address to see the quote, payment status and QR service.</p>
+        <a class="app-primary-button" href="/dashboard">Open client login</a>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="enroll.js"></script>
+</body>
+</html>

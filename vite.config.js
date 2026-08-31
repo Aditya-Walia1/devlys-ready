@@ -12,6 +12,7 @@ export default defineConfig({
         main: resolve(import.meta.dirname, 'index.html'),
         review: resolve(import.meta.dirname, 'review.html'),
         dashboard: resolve(import.meta.dirname, 'dashboard.html'),
+        enroll: resolve(import.meta.dirname, 'enroll.html'),
       },
     },
   },

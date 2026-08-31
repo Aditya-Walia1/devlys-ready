@@ -14,6 +14,7 @@
   <header class="dashboard-topbar">
     <a href="/" class="app-logo"><span>DEV</span>LYS</a>
     <nav>
+      <a href="/enroll">Enroll a business</a>
       <a href="/r/demo">Customer demo</a>
       <a href="/signout-with-chatgpt?return_to=/" id="signOutLink" hidden>Sign out</a>
     </nav>
@@ -28,101 +29,117 @@
     <section class="dashboard-auth" id="dashboardAuth" hidden>
       <div class="auth-icon" aria-hidden="true">↗</div>
       <p class="review-overline">Devlys Smart Reviews</p>
-      <h1>Sign in to manage your locations.</h1>
-      <p>Your dashboard is protected. Customer review pages remain simple and public.</p>
-      <a class="app-primary-button" href="/signin-with-chatgpt?return_to=/dashboard" target="_top">
-        Sign in with ChatGPT
-      </a>
+      <h1>Sign in to continue.</h1>
+      <p>Devlys owners manage enrollment and QR activation. Approved business clients can view their own service and analytics.</p>
+      <a class="app-primary-button" href="/signin-with-chatgpt?return_to=/dashboard" target="_top">Sign in with ChatGPT</a>
     </section>
 
-    <div id="dashboardContent" hidden>
+    <section class="dashboard-auth" id="dashboardUnassigned" hidden>
+      <div class="auth-icon" aria-hidden="true">⌁</div>
+      <p class="review-overline">No linked business</p>
+      <h1>Your sign-in is not enrolled yet.</h1>
+      <p>Apply using the same email address, or ask Devlys to add this email to an approved business account.</p>
+      <a class="app-primary-button" href="/enroll">Enroll your business</a>
+    </section>
+
+    <div id="adminContent" hidden>
       <section class="dashboard-heading">
         <div>
-          <p class="review-overline">Smart Review QR</p>
-          <h1 id="dashboardTitle">Review operations</h1>
-          <p id="dashboardSubtitle">Monitor the customer journey across your locations.</p>
+          <div class="role-line"><span class="status-pill is-admin">Devlys owner</span><small id="adminEmail"></small></div>
+          <h1>Commercial operations</h1>
+          <p>Approve clients, verify payments, activate six-month terms and create every QR journey.</p>
         </div>
-        <button type="button" class="dashboard-add-button" id="showLocationForm">+ Add location</button>
       </section>
 
-      <section class="metric-grid" aria-label="Last 30 days">
-        <article>
-          <span>QR scans</span>
-          <strong id="metricScans">0</strong>
-          <small>Last 30 days</small>
-        </article>
-        <article>
-          <span>Drafts created</span>
-          <strong id="metricDrafts">0</strong>
-          <small>Based on real input</small>
-        </article>
-        <article>
-          <span>Google handoffs</span>
-          <strong id="metricHandoffs">0</strong>
-          <small>Opened review page</small>
-        </article>
-        <article>
-          <span>Handoff rate</span>
-          <strong id="metricConversion">0%</strong>
-          <small>Scans to Google</small>
-        </article>
+      <section class="metric-grid" aria-label="Commercial overview">
+        <article><span>New applications</span><strong id="adminApplications">0</strong><small>Awaiting review</small></article>
+        <article><span>Active businesses</span><strong id="adminBusinesses">0</strong><small>Live service</small></article>
+        <article><span>Payment checks</span><strong id="adminPayments">0</strong><small>Submitted references</small></article>
+        <article><span>Managed locations</span><strong id="adminLocations">0</strong><small>QR destinations</small></article>
       </section>
 
-      <section class="location-form-card" id="locationFormCard" hidden>
-        <div class="location-form-heading">
-          <div>
-            <p class="review-overline">New location</p>
-            <h2>Create its QR review journey</h2>
-          </div>
-          <button type="button" id="hideLocationForm" aria-label="Close location form">×</button>
+      <section class="commercial-section">
+        <div class="locations-heading">
+          <div><p class="review-overline">Enrollment queue</p><h2>Businesses waiting for Devlys</h2></div>
+          <span id="applicationCount">0 applications</span>
         </div>
+        <div class="application-grid" id="applicationGrid"></div>
+        <div class="dashboard-empty" id="applicationEmpty" hidden>
+          <div aria-hidden="true">✓</div><h3>Enrollment queue is clear.</h3>
+          <p>New public applications will appear here for owner approval.</p>
+        </div>
+      </section>
 
-        <form id="locationForm">
-          <div class="dashboard-form-grid">
-            <label>
-              Business name
-              <input name="businessName" autocomplete="organization" placeholder="Devlys Hospitality" required />
-            </label>
-            <label>
-              Location name
-              <input name="locationName" placeholder="Saffron Table" required />
-            </label>
-          </div>
-          <label>
-            Location or branch
-            <input name="address" placeholder="Connaught Place · New Delhi" required />
+      <section class="commercial-section">
+        <div class="locations-heading">
+          <div><p class="review-overline">Client accounts</p><h2>Subscriptions and reusable QR codes</h2></div>
+          <span id="businessCount">0 businesses</span>
+        </div>
+        <div class="business-grid" id="businessGrid"></div>
+        <div class="dashboard-empty" id="businessEmpty" hidden>
+          <div aria-hidden="true">⌁</div><h3>No approved businesses yet.</h3>
+          <p>Approve an enrollment to create its client login, first location and reusable QR URL.</p>
+        </div>
+      </section>
+    </div>
+
+    <div id="clientContent" hidden>
+      <section class="dashboard-heading">
+        <div>
+          <div class="role-line"><span class="status-pill">Business client</span><small id="clientEmail"></small></div>
+          <h1 id="clientTitle">Your Smart Review service</h1>
+          <p>Monitor the QR journey, confirm payment and reuse the same QR throughout every renewal.</p>
+        </div>
+      </section>
+
+      <section class="subscription-card" id="subscriptionCard">
+        <div>
+          <p class="review-overline">Six-month service</p>
+          <h2 id="subscriptionHeading">Subscription status</h2>
+          <p id="subscriptionCopy"></p>
+        </div>
+        <dl>
+          <div><dt>Plan</dt><dd id="clientPlan">—</dd></div>
+          <div><dt>Quote</dt><dd id="clientQuote">—</dd></div>
+          <div><dt>Valid until</dt><dd id="clientExpiry">—</dd></div>
+        </dl>
+        <a class="app-primary-button" id="paymentLink" href="#paymentPanel" hidden>Pay securely</a>
+      </section>
+
+      <section class="payment-panel" id="paymentPanel">
+        <div>
+          <p class="review-overline">Payment confirmation</p>
+          <h2>Already paid Devlys?</h2>
+          <p>Submit the transaction reference. A Devlys owner verifies it before activating or extending the six-month term.</p>
+        </div>
+        <form id="paymentForm">
+          <label>Payment method
+            <select name="method" required>
+              <option value="upi">UPI</option>
+              <option value="bank_transfer">Bank transfer</option>
+              <option value="payment_link">Payment link</option>
+              <option value="other">Other</option>
+            </select>
           </label>
-          <label>
-            Official Google review link
-            <input name="googleReviewUrl" type="url" placeholder="https://g.page/r/…/review" required />
-            <small>Copy this from the business’s “Get more reviews” screen.</small>
-          </label>
-          <label class="color-label">
-            Brand colour
-            <input name="brandColor" type="color" value="#315efb" />
-          </label>
-          <button type="submit" class="app-primary-button">Create location and QR</button>
-          <p class="dashboard-form-status" id="locationFormStatus" aria-live="polite"></p>
+          <label>Transaction reference<input name="reference" placeholder="UTR, UPI reference or receipt ID" required /></label>
+          <button class="dashboard-add-button" type="submit">Submit for verification</button>
+          <p class="dashboard-form-status" id="paymentStatus" aria-live="polite"></p>
         </form>
       </section>
 
-      <section class="locations-section">
+      <section class="metric-grid" aria-label="Last 30 days">
+        <article><span>QR scans</span><strong id="metricScans">0</strong><small>Last 30 days</small></article>
+        <article><span>Drafts created</span><strong id="metricDrafts">0</strong><small>Based on real input</small></article>
+        <article><span>Google handoffs</span><strong id="metricHandoffs">0</strong><small>Opened review page</small></article>
+        <article><span>Handoff rate</span><strong id="metricConversion">0%</strong><small>Scans to Google</small></article>
+      </section>
+
+      <section class="commercial-section">
         <div class="locations-heading">
-          <div>
-            <p class="review-overline">Locations</p>
-            <h2>Your active review journeys</h2>
-          </div>
-          <span id="locationCount">0 locations</span>
+          <div><p class="review-overline">Your locations</p><h2>QR codes created by Devlys</h2></div>
+          <span id="clientLocationCount">0 locations</span>
         </div>
-
-        <div class="locations-grid" id="locationsGrid"></div>
-
-        <div class="dashboard-empty" id="dashboardEmpty" hidden>
-          <div aria-hidden="true">⌁</div>
-          <h3>Add your first business location.</h3>
-          <p>Connect its Google review link and Devlys will create the customer page and QR code.</p>
-          <button type="button" class="dashboard-add-button" id="emptyAddLocation">Add first location</button>
-        </div>
+        <div class="locations-grid" id="clientLocationsGrid"></div>
       </section>
     </div>
 

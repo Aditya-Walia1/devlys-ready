@@ -7,6 +7,51 @@ import worker, {
 } from '../worker/index.js';
 import { createDevDatabase } from '../scripts/dev-review-api.mjs';
 
+const origin = 'https://devlys.example';
+const adminHeaders = {
+  'oai-authenticated-user-id': 'devlys-owner-1',
+  'oai-authenticated-user-email': 'awalia1_be22@thapar.edu',
+};
+const clientHeaders = {
+  'oai-authenticated-user-id': 'client-user-1',
+  'oai-authenticated-user-email': 'owner@blueorchid.example',
+};
+const otherHeaders = {
+  'oai-authenticated-user-id': 'other-user-1',
+  'oai-authenticated-user-email': 'other@example.com',
+};
+
+function request(path, options = {}) {
+  const headers = new Headers(options.headers || {});
+  if (options.body !== undefined) {
+    headers.set('Content-Type', 'application/json');
+    headers.set('Origin', origin);
+  }
+  return new Request(`${origin}${path}`, {
+    ...options,
+    headers,
+    body: options.body === undefined ? undefined : JSON.stringify(options.body),
+  });
+}
+
+async function submitEnrollment(database) {
+  const response = await worker.fetch(request('/api/enrollments', {
+    method: 'POST',
+    body: {
+      businessName: 'Blue Orchid Hospitality',
+      contactName: 'Riya Kapoor',
+      contactEmail: 'owner@blueorchid.example',
+      contactPhone: '+91 98765 43210',
+      locationName: 'Blue Orchid Cafe',
+      address: 'Khan Market · New Delhi',
+      googleReviewUrl: 'https://g.page/r/example/review',
+      planCode: 'growth',
+    },
+  }), { DB: database });
+  assert.equal(response.status, 201);
+  return response.json();
+}
+
 test('fallback draft preserves negative sentiment and supplied detail', () => {
   const draft = buildFallbackDraft({
     businessName: 'Saffron Table',
@@ -31,103 +76,221 @@ test('Google review URL validation rejects arbitrary redirects', () => {
 
 test('demo draft endpoint completes without storing personal text', async () => {
   const response = await worker.fetch(
-    new Request('https://devlys.example/api/drafts', {
+    request('/api/drafts', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Origin: 'https://devlys.example',
-      },
-      body: JSON.stringify({
+      body: {
         slug: 'demo',
         sessionId: 'test-session',
         rating: 5,
         topics: ['food', 'ambience'],
         note: 'The team made our family dinner feel special',
-      }),
+      },
     }),
     {},
   );
-
   assert.equal(response.status, 200);
   const payload = await response.json();
   assert.equal(payload.engine, 'safe_fallback');
   assert.match(payload.draft, /family dinner feel special/i);
 });
 
-test('management endpoints require an authenticated Site user', async () => {
-  const response = await worker.fetch(
-    new Request('https://devlys.example/api/dashboard'),
-    {},
-  );
-  assert.equal(response.status, 401);
+test('only a Devlys owner can approve clients or create QR locations', async () => {
+  const database = await createDevDatabase();
+  try {
+    const anonymous = await worker.fetch(request('/api/admin/dashboard'), { DB: database });
+    assert.equal(anonymous.status, 401);
+    const signedInNonOwner = await worker.fetch(
+      request('/api/admin/dashboard', { headers: otherHeaders }),
+      { DB: database },
+    );
+    assert.equal(signedInNonOwner.status, 403);
+    const forbiddenCreate = await worker.fetch(
+      request('/api/admin/locations', {
+        method: 'POST', headers: otherHeaders,
+        body: {
+          businessId: 'unknown',
+          locationName: 'Blocked location',
+          address: 'New Delhi',
+          googleReviewUrl: 'https://g.page/r/example/review',
+        },
+      }),
+      { DB: database },
+    );
+    assert.equal(forbiddenCreate.status, 403);
+  } finally {
+    database.close();
+  }
 });
 
 test('cross-origin writes are blocked', async () => {
   const response = await worker.fetch(
-    new Request('https://devlys.example/api/events', {
+    new Request(`${origin}/api/enrollments`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Origin: 'https://malicious.example',
-      },
-      body: JSON.stringify({
-        slug: 'demo',
-        sessionId: 'test-session',
-        eventType: 'scan',
-      }),
+      headers: { 'Content-Type': 'application/json', Origin: 'https://malicious.example' },
+      body: JSON.stringify({ businessName: 'Bad request' }),
     }),
     {},
   );
   assert.equal(response.status, 403);
 });
 
-test('local development database supports the complete dashboard flow', async () => {
+test('commercial lifecycle enrolls, pays, activates, tracks, renews, and reuses one QR', async () => {
   const database = await createDevDatabase();
-  const authHeaders = {
-    'oai-authenticated-user-id': 'local-user',
-    'oai-authenticated-user-email': 'owner@example.com',
-  };
-
   try {
-    const emptyResponse = await worker.fetch(
-      new Request('http://127.0.0.1/api/dashboard', { headers: authHeaders }),
+    const enrollment = await submitEnrollment(database);
+
+    const queueResponse = await worker.fetch(
+      request('/api/admin/dashboard', { headers: adminHeaders }),
       { DB: database },
     );
-    assert.deepEqual(await emptyResponse.json(), {
-      business: null,
-      locations: [],
-      totals: { scans: 0, drafts: 0, handoffs: 0 },
-    });
+    const queue = await queueResponse.json();
+    assert.equal(queue.role, 'admin');
+    assert.equal(queue.totals.applications, 1);
+    assert.equal(queue.applications[0].contactEmail, 'owner@blueorchid.example');
 
-    const createResponse = await worker.fetch(
-      new Request('http://127.0.0.1/api/locations', {
-        method: 'POST',
-        headers: {
-          ...authHeaders,
-          'Content-Type': 'application/json',
-          Origin: 'http://127.0.0.1',
-        },
-        body: JSON.stringify({
-          businessName: 'Devlys Hospitality',
-          locationName: 'Saffron Table',
-          address: 'Connaught Place · New Delhi',
-          googleReviewUrl: 'https://g.page/r/example/review',
-          brandColor: '#315efb',
-        }),
+    const approvalResponse = await worker.fetch(
+      request(`/api/admin/enrollments/${enrollment.applicationId}/approve`, {
+        method: 'POST', headers: adminHeaders,
+        body: { amountInr: 8999, paymentLinkUrl: 'https://payments.example/blue-orchid', brandColor: '#315efb' },
       }),
       { DB: database },
     );
-    assert.equal(createResponse.status, 201);
+    assert.equal(approvalResponse.status, 201);
+    const approved = await approvalResponse.json();
+    const originalSlug = approved.location.slug;
 
-    const dashboardResponse = await worker.fetch(
-      new Request('http://127.0.0.1/api/dashboard', { headers: authHeaders }),
+    const inactiveQr = await worker.fetch(
+      request(`/api/locations/${originalSlug}`),
       { DB: database },
     );
-    const dashboard = await dashboardResponse.json();
-    assert.equal(dashboard.business.name, 'Devlys Hospitality');
-    assert.equal(dashboard.locations.length, 1);
-    assert.match(dashboard.locations[0].reviewUrl, /^http:\/\/127\.0\.0\.1\/r\//);
-    assert.deepEqual(dashboard.totals, { scans: 0, drafts: 0, handoffs: 0 });
+    assert.equal(inactiveQr.status, 402);
+
+    const clientSessionResponse = await worker.fetch(
+      request('/api/me', { headers: clientHeaders }),
+      { DB: database },
+    );
+    const clientSession = await clientSessionResponse.json();
+    assert.equal(clientSession.role, 'client');
+    assert.equal(clientSession.businessId, approved.businessId);
+
+    const paymentResponse = await worker.fetch(
+      request('/api/client/payments', {
+        method: 'POST', headers: clientHeaders,
+        body: { method: 'upi', reference: 'UPI-TEST-0001' },
+      }),
+      { DB: database },
+    );
+    assert.equal(paymentResponse.status, 201);
+    const payment = await paymentResponse.json();
+
+    const activationResponse = await worker.fetch(
+      request(`/api/admin/businesses/${approved.businessId}/activate`, {
+        method: 'POST', headers: adminHeaders,
+        body: { paymentId: payment.paymentId },
+      }),
+      { DB: database },
+    );
+    assert.equal(activationResponse.status, 200);
+    const activation = await activationResponse.json();
+    assert.equal(activation.status, 'active');
+    assert.equal(activation.payment_status, 'paid');
+
+    const activeQrResponse = await worker.fetch(
+      request(`/api/locations/${originalSlug}`),
+      { DB: database },
+    );
+    assert.equal(activeQrResponse.status, 200);
+
+    for (const eventType of ['scan', 'google_open']) {
+      const eventResponse = await worker.fetch(
+        request('/api/events', {
+          method: 'POST',
+          body: { slug: originalSlug, sessionId: 'customer-session', eventType },
+        }),
+        { DB: database },
+      );
+      assert.equal(eventResponse.status, 201);
+    }
+    const draftResponse = await worker.fetch(
+      request('/api/drafts', {
+        method: 'POST',
+        body: {
+          slug: originalSlug,
+          sessionId: 'customer-session',
+          rating: 5,
+          topics: ['food', 'service'],
+          note: 'The team was attentive and our order arrived quickly',
+        },
+      }),
+      { DB: database },
+    );
+    assert.equal(draftResponse.status, 200);
+
+    const clientDashboardResponse = await worker.fetch(
+      request('/api/client/dashboard', { headers: clientHeaders }),
+      { DB: database },
+    );
+    const clientDashboard = await clientDashboardResponse.json();
+    assert.equal(clientDashboard.business.status, 'active');
+    assert.equal(clientDashboard.business.pricePaise, 899900);
+    assert.equal(clientDashboard.locations[0].slug, originalSlug);
+    assert.deepEqual(clientDashboard.totals, { scans: 1, drafts: 1, handoffs: 1 });
+    const firstExpiry = Date.parse(`${clientDashboard.business.serviceEndsAt.replace(' ', 'T')}Z`);
+
+    const renewalPaymentResponse = await worker.fetch(
+      request('/api/client/payments', {
+        method: 'POST', headers: clientHeaders,
+        body: { method: 'bank_transfer', reference: 'BANK-RENEWAL-0002' },
+      }),
+      { DB: database },
+    );
+    const renewalPayment = await renewalPaymentResponse.json();
+    await worker.fetch(
+      request(`/api/admin/businesses/${approved.businessId}/activate`, {
+        method: 'POST', headers: adminHeaders,
+        body: { paymentId: renewalPayment.paymentId },
+      }),
+      { DB: database },
+    );
+
+    const renewedDashboardResponse = await worker.fetch(
+      request('/api/client/dashboard', { headers: clientHeaders }),
+      { DB: database },
+    );
+    const renewedDashboard = await renewedDashboardResponse.json();
+    const renewedExpiry = Date.parse(`${renewedDashboard.business.serviceEndsAt.replace(' ', 'T')}Z`);
+    assert.ok(renewedExpiry > firstExpiry);
+    assert.equal(renewedDashboard.locations[0].slug, originalSlug);
+  } finally {
+    database.close();
+  }
+});
+
+test('a business client can view but cannot create QR locations', async () => {
+  const database = await createDevDatabase();
+  try {
+    const enrollment = await submitEnrollment(database);
+    const approval = await worker.fetch(
+      request(`/api/admin/enrollments/${enrollment.applicationId}/approve`, {
+        method: 'POST', headers: adminHeaders,
+        body: { amountInr: 5000, paymentLinkUrl: '', brandColor: '#111827' },
+      }),
+      { DB: database },
+    );
+    const approved = await approval.json();
+    const response = await worker.fetch(
+      request('/api/admin/locations', {
+        method: 'POST', headers: clientHeaders,
+        body: {
+          businessId: approved.businessId,
+          locationName: 'Client-created location',
+          address: 'Should not be created',
+          googleReviewUrl: 'https://g.page/r/example/review',
+        },
+      }),
+      { DB: database },
+    );
+    assert.equal(response.status, 403);
   } finally {
     database.close();
   }
